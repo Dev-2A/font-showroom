@@ -1,7 +1,13 @@
+import Layout from "./components/Layout";
+
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-      <h1 className="text-2xl font-bold text-indigo-400">🔤 Font ShowRoom</h1>
-    </div>
+    <Layout>
+      <div className="text-center py-20">
+        <p className="text-gray-400 text-lg">
+          🚧 폰트 목록이 여기에 표시됩니다.
+        </p>
+      </div>
+    </Layout>
   );
 }
