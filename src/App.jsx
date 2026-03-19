@@ -6,11 +6,13 @@ import FontMeta from "./components/FontMeta";
 import SampleTextTabs from "./components/SampleTextTabs";
 import CSSCopyButton from "./components/CSSCopyButton";
 import { useFonts } from "./hooks/useFonts";
+import { useFavorites } from "./hooks/useFavorites";
 import { getAvailableWeights } from "./utils/fontLoader";
 import { DEFAULT_CONTROLS } from "./constants/sampleTexts";
 
 export default function App() {
   const { fonts, loading, error } = useFonts();
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const [selectedFont, setSelectedFont] = useState(null);
   const [controls, setControls] = useState({ ...DEFAULT_CONTROLS });
 
@@ -71,6 +73,9 @@ export default function App() {
               fonts={fonts}
               selectedFont={selectedFont}
               onSelectFont={handleSelectFont}
+              favorites={favorites}
+              onToggleFavorite={toggleFavorite}
+              isFavorite={isFavorite}
             />
           </div>
 
