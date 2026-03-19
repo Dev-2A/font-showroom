@@ -4,6 +4,7 @@ import FontList from "./components/FontList";
 import FontControls from "./components/FontControls";
 import FontMeta from "./components/FontMeta";
 import SampleTextTabs from "./components/SampleTextTabs";
+import CSSCopyButton from "./components/CSSCopyButton";
 import { useFonts } from "./hooks/useFonts";
 import { getAvailableWeights } from "./utils/fontLoader";
 import { DEFAULT_CONTROLS } from "./constants/sampleTexts";
@@ -73,7 +74,7 @@ export default function App() {
             />
           </div>
 
-          {/* 우측: 메타 + 컨트롤 + 미리보기 */}
+          {/* 우측: 메타 + 컨트롤 + 미리보기 + CSS */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             {selectedFont ? (
               <>
@@ -84,6 +85,10 @@ export default function App() {
                   availableWeights={availableWeights}
                 />
                 <SampleTextTabs style={previewStyle} />
+                <CSSCopyButton
+                  fontFamily={selectedFont.family}
+                  controls={controls}
+                />
               </>
             ) : (
               <div className="flex items-center justify-center h-96 bg-gray-900 rounded-lg border border-gray-800">
