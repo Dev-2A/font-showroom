@@ -46,7 +46,7 @@ export default function App() {
     : {};
 
   return (
-    <Layout>
+    <Layout selectedFont={selectedFont}>
       {loading && (
         <div className="text-center py-20">
           <p className="text-gray-400 text-lg animate-pulse">
@@ -83,7 +83,11 @@ export default function App() {
           <div className="lg:col-span-2 flex flex-col gap-4">
             {selectedFont ? (
               <>
-                <FontMeta font={selectedFont} />
+                <FontMeta
+                  font={selectedFont}
+                  isFavorite={isFavorite(selectedFont.family)}
+                  onToggleFavorite={toggleFavorite}
+                />
                 <FontControls
                   controls={controls}
                   onChange={setControls}

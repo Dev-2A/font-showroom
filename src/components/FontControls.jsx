@@ -35,6 +35,18 @@ const SLIDER_CONFIG = [
   },
 ];
 
+const WEIGHT_LABELS = {
+  100: "Thin",
+  200: "ExtraLight",
+  300: "Light",
+  400: "Regular",
+  500: "Medium",
+  600: "SemiBold",
+  700: "Bold",
+  800: "ExtraBold",
+  900: "Black",
+};
+
 export default function FontControls({ controls, onChange, availableWeights }) {
   function handleChange(key, value) {
     onChange({ ...controls, [key]: Number(value) });
@@ -50,21 +62,6 @@ export default function FontControls({ controls, onChange, availableWeights }) {
     return value;
   }
 
-  function getWeightLabel(weight) {
-    const labels = {
-      100: "Thin",
-      200: "ExtraLight",
-      300: "Light",
-      400: "Regular",
-      500: "Medium",
-      600: "SemiBold",
-      700: "Bold",
-      800: "ExtraBold",
-      900: "Black",
-    };
-    return labels[weight] || weight;
-  }
-
   return (
     <div className="bg-gray-900 rounded-lg border border-gray-800 p-5">
       <div className="flex items-center justify-between mb-4">
@@ -73,15 +70,15 @@ export default function FontControls({ controls, onChange, availableWeights }) {
         </h3>
         <button
           onClick={handleReset}
-          className="text-xs text-gray-500 hover:text-indigo-400 transition-colors"
+          className="text-xs text-gray-500 hover:text-indigo-400"
         >
           초기화
         </button>
       </div>
 
-      <div className="flex flex-col gap-5">
+      {/* 2열 그리드 (데스크탑) / 1열 (모바일) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
         {SLIDER_CONFIG.map(({ key, label, unit, min, max, step }) => {
-          // 굵기 슬라이더: 선택된 폰트의 가용 weight만 표시
           const isWeight = key === "fontWeight";
           const effectiveMin =
             isWeight && availableWeights?.length
@@ -94,14 +91,14 @@ export default function FontControls({ controls, onChange, availableWeights }) {
 
           return (
             <div key={key}>
-              <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center justify-between mb-2">
                 <label className="text-sm text-gray-400">{label}</label>
                 <span className="text-sm text-indigo-400 font-mono">
                   {formatValue(key, controls[key])}
                   {unit && <span className="text-gray-600 ml-0.5">{unit}</span>}
                   {isWeight && (
                     <span className="text-gray-600 ml-1 font-sans text-xs">
-                      {getWeightLabel(controls[key])}
+                      {WEIGHT_LABELS[controls[key]] || ""}
                     </span>
                   )}
                 </span>
@@ -113,7 +110,7 @@ export default function FontControls({ controls, onChange, availableWeights }) {
                 step={step}
                 value={controls[key]}
                 onChange={(e) => handleChange(key, e.target.value)}
-                className="w-full h-1.5 bg-gray-700 rounded-full appearance-none cursor-pointer accent-indigo-500"
+                className="w-full cursor-pointer"
               />
               <div className="flex justify-between mt-1">
                 <span className="text-xs text-gray-600">{effectiveMin}</span>
