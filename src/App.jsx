@@ -1,8 +1,11 @@
+import { useState } from "react";
 import Layout from "./components/Layout";
+import FontList from "./components/FontList";
 import { useFonts } from "./hooks/useFonts";
 
 export default function App() {
   const { fonts, loading, error } = useFonts();
+  const [selectedFont, setSelectedFont] = useState(null);
 
   return (
     <Layout>
@@ -25,29 +28,36 @@ export default function App() {
       )}
 
       {!loading && !error && (
-        <div>
-          <p className="text-gray-400 mb-4">
-            총 <span className="text-indigo-400 font-bold">{fonts.length}</span>
-            개 폰트를 불러왔습니다.
-          </p>
-          <ul className="space-y-2">
-            {fonts.slice(0, 20).map((font) => (
-              <li
-                key={font.family}
-                className="text-gray-300 bg-gray-900 rounded-lg px-4 py-3"
-              >
-                {font.family}
-                <span className="text-gray-500 text-sm ml-2">
-                  ({font.variants?.length || 0} variants)
-                </span>
-              </li>
-            ))}
-          </ul>
-          {fonts.length > 20 && (
-            <p className="text-gray-500 text-sm mt-4 text-center">
-              ...외 {fonts.length - 20}개
-            </p>
-          )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* 좌측: 폰트 목록 */}
+          <div className="lg:col-span-1">
+            <FontList
+              fonts={fonts}
+              selectedFont={selectedFont}
+              onSelectFont={setSelectedFont}
+            />
+          </div>
+
+          {/* 우측: 미리보기 영역 (다음 단계에서 구현) */}
+          <div className="lg:col-span-2">
+            {selectedFont ? (
+              <div className="bg-gray-900 rounded-lg border border-gray-800 p-6">
+                <h2 className="text-xl font-bold text-white mb-4">
+                  {selectedFont.family}
+                </h2>
+                <p
+                  style={{ fontFamily: `"${selectedFont.family}", sans-serif` }}
+                  className="text-2xl text-gray-100"
+                >
+                  🚧 미리보기 영역은 다음 단계에서 구현됩니다.
+                </p>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-64 bg-gray-900 rounded-lg border border-gray-800">
+                <p className="text-gray-500">← 좌측에서 폰트를 선택해주세요</p>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </Layout>
