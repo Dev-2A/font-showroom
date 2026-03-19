@@ -1,11 +1,45 @@
 import { useState } from "react";
 import Layout from "./components/Layout";
 import FontList from "./components/FontList";
+import FontControls from "./components/FontControls";
 import { useFonts } from "./hooks/useFonts";
+import { getAvailableWeights } from "./utils/fontLoader";
+import { DEFAULT_CONTROLS } from "./constants/sampleTexts";
 
 export default function App() {
   const { fonts, loading, error } = useFonts();
   const [selectedFont, setSelectedFont] = useState(null);
+  const [controls, setControls] = useState({ ...DEFAULT_CONTROLS });
+
+  const availableWeights = selectedFont
+    ? getAvailableWeights(selectedFont)
+    : [];
+
+  function handleSelectFont(font) {
+    setSelectedFont(font);
+
+    // 선택한 폰트가 현재 weight를 지원하지 않으면 가장 가까운 weight로 조정
+    const weights = getAvailableWeights(font);
+    if (weights.length > 0 && !weights.includes(controls.fontWeight)) {
+      const closest = weights.reduce((prev, curr) =>
+        Math.abs(curr - controls.fontWeight) <
+        Math.abs(prev - controls.fontWeight)
+          ? curr
+          : prev,
+      );
+      setControls((prev) => ({ ...prev, fontWeight: closest }));
+    }
+  }
+
+  const previewStyle = selectedFont
+    ? {
+        fontFamily: `"${selectedFont.family}", sans-serif`,
+        fontSize: `${controls.fontSize}px`,
+        fontWeight: controls.fontWeight,
+        letterSpacing: `${controls.letterSpacing}em`,
+        lineHeight: controls.lineHeight,
+      }
+    : {};
 
   return (
     <Layout>
@@ -30,27 +64,35 @@ export default function App() {
       {!loading && !error && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* 좌측: 폰트 목록 */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 flex flex-col gap-4">
             <FontList
               fonts={fonts}
               selectedFont={selectedFont}
-              onSelectFont={setSelectedFont}
+              onSelectFont={handleSelectFont}
             />
           </div>
 
-          {/* 우측: 미리보기 영역 (다음 단계에서 구현) */}
-          <div className="lg:col-span-2">
+          {/* 우측: 컨트롤 + 미리보기 */}
+          <div className="lg:col-span-2 flex flex-col gap-4">
+            <FontControls
+              controls={controls}
+              onChange={setControls}
+              availableWeights={availableWeights}
+            />
+
             {selectedFont ? (
               <div className="bg-gray-900 rounded-lg border border-gray-800 p-6">
-                <h2 className="text-xl font-bold text-white mb-4">
+                <h2 className="text-lg font-bold text-white mb-4">
                   {selectedFont.family}
+                  <span className="text-sm text-gray-500 font-normal ml-2">
+                    미리보기
+                  </span>
                 </h2>
-                <p
-                  style={{ fontFamily: `"${selectedFont.family}", sans-serif` }}
-                  className="text-2xl text-gray-100"
-                >
-                  🚧 미리보기 영역은 다음 단계에서 구현됩니다.
-                </p>
+                <div style={previewStyle} className="text-gray-100">
+                  <p>다람쥐 헌 쳇바퀴에 타고파</p>
+                  <p>The quick brown fox jumps over the lazy dog</p>
+                  <p>0123456789</p>
+                </div>
               </div>
             ) : (
               <div className="flex items-center justify-center h-64 bg-gray-900 rounded-lg border border-gray-800">
